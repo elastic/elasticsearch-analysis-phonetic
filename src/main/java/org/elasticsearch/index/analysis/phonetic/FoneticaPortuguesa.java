@@ -34,13 +34,42 @@ import org.apache.commons.codec.StringEncoder;
  * 
  */
 public class FoneticaPortuguesa implements StringEncoder {
-
+	
 	private static final Map<String, String[]> SOUNDS = new HashMap<String, String[]>() {{
 		put("X",    new String[]{ "SH", "CH" });
 		put("OINS", new String[]{ "ÕES", "ÕIS", "OIS", "OES" });
 		put("S",    new String[]{ "SS", "Ç" });
 		put("LI",   new String[]{ "LH" });
-		put("AM",   new String[]{ "ÃO", "AN" });
+		put("NI",   new String[]{ "NH" });
+		put("AN",   new String[]{ "ÃO", "AM", "Ã" });
+		put("EIA",  new String[]{ "ÉA", "EA", "ÊA" });
+		put("R",  	new String[]{ "RR" });
+		put("T",  	new String[]{ "TT" });
+	}};
+	
+	private static final String AOU = "AOUÁÓÚÂÔÛÀÒÙÃÕŨ";
+	private static final String REGEX_AOU = "([" + AOU + "]{1})";
+	private static final Map<String, String[]> SOUNDS_BEFORE_AOU = new HashMap<String, String[]>() {{
+		put("K$1",  new String[]{ "CC" + REGEX_AOU, "C" + REGEX_AOU });
+		put("KU$1", new String[]{ "Q[UÜ]" + REGEX_AOU });
+	}};
+	
+	private static final String REGEX_U = "([UÚÛÙŨ]{1})";
+	private static final Map<String, String[]> SOUNDS_BEFORE_U = new HashMap<String, String[]>() {{
+		put("K$1",  new String[]{ "Q[UÜ]" + REGEX_U });
+	}};
+	
+	private static final String EI = "EIÉÍÈÌÊÊẼẼ";
+	private static final String REGEX_EI = "([" + EI + "]{1})";
+	private static final Map<String, String[]> SOUNDS_BEFORE_EI = new HashMap<String, String[]>() {{
+		put("K$1",  new String[]{ "QU" + REGEX_EI });
+		put("KU$1",  new String[]{ "QÜ" + REGEX_EI });
+		put("S$1",  new String[]{ "C" + REGEX_EI });
+	}};
+	
+	private static final String REGEX_VOCALS = "([" + AOU + EI + "]{1})";
+	private static final Map<String, String[]> SOUNDS_BETWEEN_VOCALS = new HashMap<String, String[]>() {{
+		put("$1Z$2",  new String[]{ REGEX_VOCALS + "S" + REGEX_VOCALS });
 	}};
 	
 	@Override
@@ -52,9 +81,30 @@ public class FoneticaPortuguesa implements StringEncoder {
 	public String encode(String str) throws EncoderException {
 		if (str == null)
 			return null;
-		return replaceSounds(str.toUpperCase());
+		String replaced = str.toUpperCase();
+		replaced = replaceSoundsRegex(replaced, SOUNDS_BETWEEN_VOCALS);
+		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_U);
+		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_AOU);
+		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_EI);
+		return replaceSounds(replaced);
 	}
-
+	
+	private String replaceSoundsRegex(String str, Map<String, String[]> sounds) {
+		String replaced = str;
+		for(Entry<String, String[]> e : sounds.entrySet()) {
+			replaced = replaceSoundRegex(replaced, e);
+		}
+		return replaced;
+	}
+	
+	private String replaceSoundRegex(String str, Entry<String, String[]> e) {
+		String replaced = str;
+		for(String expression : e.getValue()) {
+			replaced = replaced.replaceAll(expression, e.getKey());
+		}
+		return replaced;
+	}
+	
 	private String replaceSounds(String str) {
 		String replaced = str;
 		for(Entry<String, String[]> e : SOUNDS.entrySet()) {

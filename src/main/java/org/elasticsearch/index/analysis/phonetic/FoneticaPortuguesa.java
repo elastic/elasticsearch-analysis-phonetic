@@ -18,6 +18,10 @@
  */
 package org.elasticsearch.index.analysis.phonetic;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 
@@ -31,6 +35,14 @@ import org.apache.commons.codec.StringEncoder;
  */
 public class FoneticaPortuguesa implements StringEncoder {
 
+	private static final Map<String, String[]> SOUNDS = new HashMap<String, String[]>() {{
+		put("X",    new String[]{ "SH", "CH" });
+		put("OINS", new String[]{ "ÕES", "ÕIS", "OIS", "OES" });
+		put("S",    new String[]{ "SS", "Ç" });
+		put("LI",   new String[]{ "LH" });
+		put("AM",   new String[]{ "ÃO", "AN" });
+	}};
+	
 	@Override
 	public Object encode(Object str) throws EncoderException {
 		return encode((String) str);
@@ -40,30 +52,22 @@ public class FoneticaPortuguesa implements StringEncoder {
 	public String encode(String str) throws EncoderException {
 		if (str == null)
 			return null;
-		return substitute(str);
+		return replaceSounds(str.toUpperCase());
 	}
 
-	private String substitute(String str) {
-		return soundOfOins(soundOfS(soundOfAM(muteH(soundOfX(str.toUpperCase())))));
+	private String replaceSounds(String str) {
+		String replaced = str;
+		for(Entry<String, String[]> e : SOUNDS.entrySet()) {
+			replaced = replaceSound(replaced, e);
+		}
+		return replaced;
 	}
-
-	private String soundOfOins(String s) {
-		return s.replace("ÕES", "OINS").replace("ÕIS", "OINS").replace("OIS", "OINS").replace("OES", "OINS");
-	}
-
-	private String soundOfX(String s) {
-		return s.replace("CH", "X").replace("SH", "X");
-	}
-
-	private String soundOfS(String s) {
-		return s.replace("SS", "S").replace("Ç", "S");
-	}
-
-	private String muteH(String s) {
-		return s.replace("LH", "LI");
-	}
-
-	private String soundOfAM(String s) {
-		return s.replace("AN", "AM").replace("ÃO", "AM");
+	
+	private String replaceSound(String str, Entry<String, String[]> e) {
+		String replaced = str;
+		for(String expression : e.getValue()) {
+			replaced = replaced.replace(expression, e.getKey());
+		}
+		return replaced;
 	}
 }

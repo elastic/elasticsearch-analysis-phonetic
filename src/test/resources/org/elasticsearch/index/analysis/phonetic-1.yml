@@ -28,3 +28,6 @@ index:
       nysiisfilter:
         type: phonetic
         encoder: nysiis
+      portuguesefilter:
+        type: phonetic
+        encoder: foneticaportuguesa

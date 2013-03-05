@@ -159,6 +159,7 @@ public class FoneticaPortuguesaTests {
 		assertEncode("hó", "ó");
 		assertEncode("húmido", "úmido");
 		assertEncode("óhtimo", "ótimo");
+		assertEncode("thia", "tia");
 	}
     
     private void assertEncode(String before, String after) throws EncoderException {

@@ -103,6 +103,37 @@ public class FoneticaPortuguesaTests {
 	}
 	
 	@Test
+    public void testQUBeforeEandI() throws EncoderException {
+    	assertEncode("que", "ke");
+    	assertEncode("qué", "ké");
+    	assertEncode("qui", "ki");
+    	assertEncode("quí", "kí");
+    	assertEncode("qüe", "kue");
+    	assertEncode("qüé", "kué");
+    	assertEncode("qüi", "kui");
+    	assertEncode("qüí", "kuí");
+	}
+	
+	@Test
+    public void testGbeforeEandI() throws EncoderException {
+    	assertEncode("ge", "je");
+    	assertEncode("gi", "ji");
+    	assertEncode("gé", "jé");
+    	assertEncode("gí", "jí");
+	}
+	
+	@Test
+    public void testGSound() throws EncoderException {
+    	assertEncode("ga", "gha");
+    	assertEncode("go", "gho");
+    	assertEncode("gu", "ghu");
+    	assertEncode("gue", "ghe");
+    	assertEncode("gui", "ghi");
+    	assertEncode("güe", "ghue");
+    	assertEncode("güi", "ghui");
+	}
+	
+	@Test
     public void testSWithSoundOFZ() throws EncoderException {
     	assertEncode("asa", "aza");
     	assertEncode("esaú", "ezaú");

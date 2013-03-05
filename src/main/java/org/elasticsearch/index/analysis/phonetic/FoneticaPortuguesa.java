@@ -45,6 +45,7 @@ public class FoneticaPortuguesa implements StringEncoder {
 		put("EIA",  new String[]{ "ÉA", "EA", "ÊA" });
 		put("R",  	new String[]{ "RR" });
 		put("T",  	new String[]{ "TT" });
+		put("GHU",  new String[]{ "GÜ" });
 	}};
 	
 	private static final String AOU = "AOUÁÓÚÂÔÛÀÒÙÃÕŨ";
@@ -52,6 +53,7 @@ public class FoneticaPortuguesa implements StringEncoder {
 	private static final Map<String, String[]> SOUNDS_BEFORE_AOU = new HashMap<String, String[]>() {{
 		put("K$1",  new String[]{ "CC" + REGEX_AOU, "C" + REGEX_AOU });
 		put("KU$1", new String[]{ "Q[UÜ]" + REGEX_AOU });
+		put("GH$1", new String[]{ "G" + REGEX_AOU });
 	}};
 	
 	private static final String REGEX_U = "([UÚÛÙŨ]{1})";
@@ -63,8 +65,10 @@ public class FoneticaPortuguesa implements StringEncoder {
 	private static final String REGEX_EI = "([" + EI + "]{1})";
 	private static final Map<String, String[]> SOUNDS_BEFORE_EI = new HashMap<String, String[]>() {{
 		put("K$1",  new String[]{ "QU" + REGEX_EI });
-		put("KU$1",  new String[]{ "QÜ" + REGEX_EI });
+		put("KU$1", new String[]{ "QÜ" + REGEX_EI });
 		put("S$1",  new String[]{ "C" + REGEX_EI });
+		put("J$1",  new String[]{ "G" + REGEX_EI });
+		put("GH$1", new String[]{ "GU" + REGEX_EI });
 	}};
 	
 	private static final String REGEX_VOCALS = "([" + AOU + EI + "]{1})";
@@ -84,8 +88,8 @@ public class FoneticaPortuguesa implements StringEncoder {
 		String replaced = str.toUpperCase();
 		replaced = replaceSoundsRegex(replaced, SOUNDS_BETWEEN_VOCALS);
 		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_U);
-		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_AOU);
 		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_EI);
+		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_AOU);
 		return replaceSounds(replaced);
 	}
 	

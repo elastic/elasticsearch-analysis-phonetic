@@ -1,6 +1,5 @@
 package org.elasticsearch.index.analysis.phonetic;
 
-
 import org.apache.commons.codec.EncoderException;
 import org.hamcrest.MatcherAssert;
 import org.testng.annotations.Test;
@@ -8,19 +7,12 @@ import org.testng.annotations.Test;
 public class FoneticaPortuguesaTests {
 
     @Test
-    public void testCHeSHToXis() throws EncoderException {
+    public void testConsonantClusterOfHLetter() throws EncoderException {
+    	assertEncode("talho", "talio");
+    	assertEncode("banho", "banio");
     	assertEncode("aché", "axé");
     	assertEncode("ashé", "axé");
-    }
-
-    @Test
-    public void testLiSound() throws EncoderException {
-    	assertEncode("talho", "talio");
-    }
-    
-    @Test
-    public void testNiSound() throws EncoderException {
-    	assertEncode("banho", "banio");
+    	assertEncode("rapha", "rafa");
     }
     
     @Test
@@ -30,10 +22,18 @@ public class FoneticaPortuguesaTests {
     }
     
     @Test
-    public void testAOeANemAM() throws EncoderException {
+    public void testAOeAMemAN() throws EncoderException {
     	assertEncode("kão", "kan");
-    	assertEncode("kam", "kan");
     	assertEncode("kã", "kan");
+    	assertEncode("kam", "kan");
+    	assertEncode("kãod", "kand");
+    	assertEncode("kãp", "kanp");
+    	assertEncode("kamt", "kant");
+    }
+    
+    @Test
+    public void testAMbeforeVocal() throws EncoderException {
+    	assertEncode("ama", "ama");
     }
     
     @Test
@@ -124,13 +124,13 @@ public class FoneticaPortuguesaTests {
 	
 	@Test
     public void testGSound() throws EncoderException {
-    	assertEncode("ga", "gha");
-    	assertEncode("go", "gho");
-    	assertEncode("gu", "ghu");
-    	assertEncode("gue", "ghe");
-    	assertEncode("gui", "ghi");
-    	assertEncode("güe", "ghue");
-    	assertEncode("güi", "ghui");
+    	assertEncode("ga", "g1a");
+    	assertEncode("go", "g1o");
+    	assertEncode("gu", "g1u");
+    	assertEncode("gue", "g1e");
+    	assertEncode("gui", "g1i");
+    	assertEncode("güe", "g1ue");
+    	assertEncode("güi", "g1ui");
 	}
 	
 	@Test
@@ -138,6 +138,28 @@ public class FoneticaPortuguesaTests {
     	assertEncode("asa", "aza");
     	assertEncode("esaú", "ezaú");
     }
+	
+	@Test
+    public void testLWithSoundOfU() throws EncoderException {
+    	assertEncode("alto", "auto");
+    	assertEncode("samuel", "samueu");
+    }
+	
+	@Test
+    public void testLAsConsonant() throws EncoderException {
+		assertEncode("ela", "ela");
+		assertEncode("ele", "ele");
+		assertEncode("lá", "lá");
+	}
+	
+	@Test
+    public void testHMute() throws EncoderException {
+		assertEncode("home", "ome");
+		assertEncode("ha", "a");
+		assertEncode("hó", "ó");
+		assertEncode("húmido", "úmido");
+		assertEncode("óhtimo", "ótimo");
+	}
     
     private void assertEncode(String before, String after) throws EncoderException {
     	FoneticaPortuguesa encoder = new FoneticaPortuguesa();

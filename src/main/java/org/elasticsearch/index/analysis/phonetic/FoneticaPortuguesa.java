@@ -52,22 +52,8 @@ public class FoneticaPortuguesa implements StringEncoder {
 		put("U",    new String[]{ "L$" });
 	}};
 
-	private static final Map<String, String[]> SOUNDS_BEFORE_AOU = new HashMap<String, String[]>() {{
-		put("K$1",  new String[]{ "CC" + REGEX_AOU, "C" + REGEX_AOU });
-		put("KU$1", new String[]{ "Q[UÜ]" + REGEX_AOU });
-		put("G1$1", new String[]{ "G" + REGEX_AOU });
-	}};
-
 	private static final Map<String, String[]> SOUNDS_BEFORE_U = new HashMap<String, String[]>() {{
 		put("K$1",  new String[]{ "Q[UÜ]" + REGEX_U });
-	}};
-	
-	private static final Map<String, String[]> SOUNDS_BEFORE_EI = new HashMap<String, String[]>() {{
-		put("K$1",  new String[]{ "QU" + REGEX_EI });
-		put("KU$1", new String[]{ "QÜ" + REGEX_EI });
-		put("S$1",  new String[]{ "C" + REGEX_EI });
-		put("J$1",  new String[]{ "G" + REGEX_EI });
-		put("G1$1", new String[]{ "GU" + REGEX_EI });
 	}};
 
 	private static final Map<String, String[]> SOUNDS_BETWEEN_VOCALS = new HashMap<String, String[]>() {{
@@ -75,10 +61,6 @@ public class FoneticaPortuguesa implements StringEncoder {
 	}};
 	
 	private static final Map<String, String[]> OTHER_SOUNDS = new HashMap<String, String[]>() {{
-		put("X",    new String[]{ "SH", "CH" });
-		put("F",    new String[]{ "PH" });
-		put("OINS", new String[]{ "ÕES", "ÕIS", "OIS", "OES" });
-		put("S",    new String[]{ "SS", "Ç" });
 		put("LI",   new String[]{ "LH" });
 		put("NI",   new String[]{ "NH" });
 		put("AN",   new String[]{ "ÃO", "Ã" });
@@ -86,10 +68,6 @@ public class FoneticaPortuguesa implements StringEncoder {
 		put("R",  	new String[]{ "RR" });
 		put("T",  	new String[]{ "TT" });
 		put("G1U",  new String[]{ "GÜ" });
-	}};
-	
-	private static final Map<String, String[]> MUTE_SOUNDS = new HashMap<String, String[]>() {{
-		put("",     new String[]{ "H" });
 	}};
 	
 	@Override
@@ -104,11 +82,195 @@ public class FoneticaPortuguesa implements StringEncoder {
 		String replaced = str.toUpperCase();
 		replaced = replaceSoundsRegex(replaced, SOUNDS_BETWEEN_VOCALS);
 		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_U);
-		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_EI);
-		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_AOU);
 		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_CONSONANTS);
 		replaced = replaceSoundsRegex(replaced, OTHER_SOUNDS);
-		return replaceSoundsRegex(replaced, MUTE_SOUNDS);
+		return new EncoderLetterByLetter(replaced).encode();
+	}
+	
+	private class EncoderLetterByLetter {
+		
+		//private static final String CONSONANTS = "BCDFGHJKLMNPQRSTVXZW";
+		private static final String VOCALS_O = "OÓÔÒÕ";
+		private static final String VOCALS_AOU = "AUÁÚÂÛÀÙÃŨ" + VOCALS_O;
+		private static final String VOCALS_EI = "EIÉÍÈÌÊÊẼẼ";
+		
+		private int index;
+		private String str;
+		private StringBuilder buffer;
+		private int length;
+
+		public EncoderLetterByLetter(String str) {
+			this.index = 0;
+			this.str = str;
+			this.length = str.length();
+			this.buffer = new StringBuilder();
+		}
+		
+		public String encode() {
+			while(this.index < this.length) {
+				this.allLetters();
+				this.index++;
+			}
+			return this.buffer.toString();
+		}
+		
+		private void allLetters() {
+			char current = this.str.charAt(this.index);
+			if(!treatChar(current)) {
+				this.buffer.append(current);
+			}
+		}
+		
+		private boolean treatChar(char current) {
+			switch(current) {
+				case 'C': return consonantC(current);
+				case 'Ç': return consonantCedilha(current);
+				case 'G': return consonantG(current);
+				case 'H': return consonantH(current);
+				case 'P': return consonantP(current);
+				case 'Q': return consonantQ(current);
+				case 'S': return consonantS(current);
+			}
+			if(isO(current)) {
+				return vocalO(current);
+			}
+			return false;
+		}
+		
+		private boolean consonantC(char current) {
+			char next = this.next();
+			if( isAOU(next) ) {
+				this.buffer.append('K');
+				return true;
+			}
+			if( isEI(next) ) {
+				this.buffer.append('S');
+				return true;
+			}
+			if( next == 'C' ) {
+				if( isAOU(this.next(2)) ) {
+					this.buffer.append('K');
+					this.index++;
+					return true;
+				}
+			} else if( next == 'H' ) {
+				this.buffer.append('X');
+				this.index++;
+				return true;
+			}
+			return false;
+		}
+		
+		private boolean consonantCedilha(char current) {
+			this.buffer.append('S');
+			return true;
+		}
+		
+		private boolean consonantG(char current) {
+			char next = this.next();
+			if( next == 'U' ) {
+				if( isEI(this.next(2)) ) {
+					this.buffer.append('G').append('1');
+					this.index++;
+					return true;
+				}
+			}
+			if(isAOU(next)) {
+				this.buffer.append('G').append('1');
+				return true;
+			}
+			if(isEI(next)) {
+				this.buffer.append('J');
+				return true;
+			}
+			return false;
+		}
+		
+		private boolean consonantH(char current) {
+			return true;
+		}
+		
+		private boolean consonantP(char current) {
+			char next = this.next();
+			if( next == 'H' ) {
+				this.buffer.append('F');
+				this.index++;
+				return true;
+			}
+			return false;
+		}
+		
+		private boolean consonantQ(char current) {
+			char next = this.next();
+			if(next == 'U' || next == 'Ü') {
+				char afterNext = this.next(2);
+				if( isEI(afterNext) ) {
+					if( next == 'U' ) {
+						this.buffer.append('K');
+						this.index += 1;
+						return true;
+					}
+					if( next == 'Ü') {
+						this.buffer.append('K').append('U');
+						this.index += 1;
+						return true;
+					}
+				} else if( isAOU(afterNext) ) {
+					this.buffer.append('K').append('U');
+					this.index += 1;
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		private boolean consonantS(char current) {
+			char next = this.next();
+			if( next == 'H' ) {
+				this.buffer.append('X');
+				this.index++;
+				return true;
+			}
+			if( next == 'S' ) {
+				this.buffer.append('S');
+				this.index++;
+				return true;
+			}
+			return false;
+		}
+		
+		private boolean vocalO(char current) {
+			char afterNext = this.next(2);
+			if( afterNext == 'S' ) {
+				char next = this.next();
+				if( isEI(next) ) {
+					this.buffer.append('O').append('I').append('N').append('S');
+					this.index += 2;
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		private char next() {
+			return this.next(1);
+		}
+		
+		private char next(int salto) {
+			return this.index + salto < this.length ? this.str.charAt(this.index + salto) : '_';
+		}
+		
+		private boolean isAOU(char c) {
+			return VOCALS_AOU.indexOf(c)!=-1;
+		}
+		
+		private boolean isO(char c) {
+			return VOCALS_O.indexOf(c)!=-1;
+		}
+		
+		private boolean isEI(char c) {
+			return VOCALS_EI.indexOf(c)!=-1;
+		}
 	}
 	
 	private String replaceSoundsRegex(String str, Map<String, String[]> sounds) {

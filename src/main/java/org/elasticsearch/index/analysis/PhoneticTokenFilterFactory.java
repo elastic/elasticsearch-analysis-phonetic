@@ -40,6 +40,7 @@ import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.Index;
+import org.elasticsearch.index.analysis.phonetic.FoneticaPortuguesa;
 import org.elasticsearch.index.analysis.phonetic.HaasePhonetik;
 import org.elasticsearch.index.analysis.phonetic.KoelnerPhonetik;
 import org.elasticsearch.index.analysis.phonetic.Nysiis;
@@ -109,6 +110,8 @@ public class PhoneticTokenFilterFactory extends AbstractTokenFilterFactory {
             this.encoder = new HaasePhonetik();
         } else if ("nysiis".equalsIgnoreCase(encodername)) {
             this.encoder = new Nysiis();
+        } else if ("foneticaportuguesa".equalsIgnoreCase(encodername)) {
+        	this.encoder = new FoneticaPortuguesa();
         } else {
             throw new ElasticSearchIllegalArgumentException("unknown encoder [" + encodername + "] for phonetic token filter");
         }

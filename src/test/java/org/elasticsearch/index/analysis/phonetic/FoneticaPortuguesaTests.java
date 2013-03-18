@@ -19,6 +19,7 @@ public class FoneticaPortuguesaTests {
     public void testSSeCemS() throws EncoderException {
     	assertEncode("assa", "asa");
     	assertEncode("aço", "aso");
+    	assertEncode("asssssa", "asa");
     }
     
     @Test
@@ -29,6 +30,10 @@ public class FoneticaPortuguesaTests {
     	assertEncode("kãod", "kand");
     	assertEncode("kãp", "kanp");
     	assertEncode("kamt", "kant");
+    	assertEncode("kaum", "kan");
+    	assertEncode("kãum", "kan");
+    	assertEncode("kaun", "kan");
+    	assertEncode("kãun", "kan");
     }
     
     @Test
@@ -75,11 +80,15 @@ public class FoneticaPortuguesaTests {
     @Test
     public void testRRemR() throws EncoderException {
     	assertEncode("terra", "tera");
+    	assertEncode("terrra", "tera");
+    	assertEncode("terrrra", "tera");
     }
     
     @Test
     public void testTTemT() throws EncoderException {
     	assertEncode("motta", "mota");
+    	assertEncode("mottta", "mota");
+    	assertEncode("motttta", "mota");
     }
     
     @Test
@@ -97,9 +106,9 @@ public class FoneticaPortuguesaTests {
 	@Test
     public void testQUBeforeU() throws EncoderException {
     	assertEncode("quu", "ku");
-    	assertEncode("qüú", "kú");
+    	assertEncode("qüú", "ku");
     	assertEncode("qüu", "ku");
-    	assertEncode("quú", "kú");
+    	assertEncode("quú", "ku");
 	}
 	
 	@Test

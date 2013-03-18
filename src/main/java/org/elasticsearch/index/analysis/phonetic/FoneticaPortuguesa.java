@@ -35,41 +35,6 @@ import org.apache.commons.codec.StringEncoder;
  */
 public class FoneticaPortuguesa implements StringEncoder {
 	
-	private static final String AOU = "AOUÁÓÚÂÔÛÀÒÙÃÕŨ";
-	private static final String EI = "EIÉÍÈÌÊÊẼẼ";
-	private static final String STRONG_CONSONANTS = "BCDFGJKLMNPQRSTVXZWY";
-	
-	private static final String REGEX_AOU = "([" + AOU + "]{1})";
-	private static final String REGEX_U = "([UÚÛÙŨ]{1})";
-	private static final String REGEX_EI = "([" + EI + "]{1})";
-	private static final String REGEX_VOCALS = "([" + AOU + EI + "]{1})";
-	private static final String REGEX_CONSONANTS = "([" + STRONG_CONSONANTS + "]{1})";
-	
-	private static final Map<String, String[]> SOUNDS_BEFORE_CONSONANTS = new HashMap<String, String[]>() {{
-		put("AN$1",  new String[]{ "AM" + REGEX_CONSONANTS });
-		put("AN",    new String[]{ "AM$" });
-		put("U$1",  new String[]{ "L" + REGEX_CONSONANTS });
-		put("U",    new String[]{ "L$" });
-	}};
-
-	private static final Map<String, String[]> SOUNDS_BEFORE_U = new HashMap<String, String[]>() {{
-		put("K$1",  new String[]{ "Q[UÜ]" + REGEX_U });
-	}};
-
-	private static final Map<String, String[]> SOUNDS_BETWEEN_VOCALS = new HashMap<String, String[]>() {{
-		put("$1Z$2",  new String[]{ REGEX_VOCALS + "S" + REGEX_VOCALS });
-	}};
-	
-	private static final Map<String, String[]> OTHER_SOUNDS = new HashMap<String, String[]>() {{
-		put("LI",   new String[]{ "LH" });
-		put("NI",   new String[]{ "NH" });
-		put("AN",   new String[]{ "ÃO", "Ã" });
-		put("EIA",  new String[]{ "ÉA", "EA", "ÊA" });
-		put("R",  	new String[]{ "RR" });
-		put("T",  	new String[]{ "TT" });
-		put("G1U",  new String[]{ "GÜ" });
-	}};
-	
 	@Override
 	public Object encode(Object str) throws EncoderException {
 		return encode((String) str);
@@ -80,19 +45,21 @@ public class FoneticaPortuguesa implements StringEncoder {
 		if (str == null)
 			return null;
 		String replaced = str.toUpperCase();
-		replaced = replaceSoundsRegex(replaced, SOUNDS_BETWEEN_VOCALS);
-		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_U);
-		replaced = replaceSoundsRegex(replaced, SOUNDS_BEFORE_CONSONANTS);
-		replaced = replaceSoundsRegex(replaced, OTHER_SOUNDS);
 		return new EncoderLetterByLetter(replaced).encode();
 	}
 	
 	private class EncoderLetterByLetter {
 		
-		//private static final String CONSONANTS = "BCDFGHJKLMNPQRSTVXZW";
-		private static final String VOCALS_O = "OÓÔÒÕ";
-		private static final String VOCALS_AOU = "AUÁÚÂÛÀÙÃŨ" + VOCALS_O;
-		private static final String VOCALS_EI = "EIÉÍÈÌÊÊẼẼ";
+		private static final String VOCALS_O = "OÓÔÒÕÖ";
+		private static final String VOCALS_U = "UÚÛÙŨÜ";
+		private static final String VOCALS_A = "AÁÂÀÃÄ";
+		private static final String VOCALS_AOU = VOCALS_A + VOCALS_O + VOCALS_U;
+		private static final String VOCALS_E = "EÉÈÊẼË";
+		private static final String VOCALS_EI = "IÍÌÎĨÏ" + VOCALS_E;
+		private static final String VOCALS = VOCALS_AOU + VOCALS_EI;
+		private static final String CONSONANTS_MN = "MN";
+		private static final String STRONG_CONSONANTS = "BCDFGJKLPQRSTVXZW";
+		private static final String CONSONANTS_WITHOUT_H = STRONG_CONSONANTS + CONSONANTS_MN;
 		
 		private int index;
 		private String str;
@@ -127,12 +94,25 @@ public class FoneticaPortuguesa implements StringEncoder {
 				case 'Ç': return consonantCedilha(current);
 				case 'G': return consonantG(current);
 				case 'H': return consonantH(current);
+				case 'L': return consonantL(current);
+				case 'N': return consonantN(current);
 				case 'P': return consonantP(current);
 				case 'Q': return consonantQ(current);
+				case 'R': return consonantR(current);
 				case 'S': return consonantS(current);
+				case 'T': return consonantT(current);
+			}
+			if(isA(current)) {
+				return vocalAnyA(current);
+			}
+			if(isE(current)) {
+				return vocalAnyE(current);
 			}
 			if(isO(current)) {
-				return vocalO(current);
+				return vocalAnyO(current);
+			}
+			if(isU(current)) {
+				return vocalAnyU(current);
 			}
 			return false;
 		}
@@ -174,6 +154,10 @@ public class FoneticaPortuguesa implements StringEncoder {
 					this.index++;
 					return true;
 				}
+			} else if (next == 'Ü') {
+				this.buffer.append('G').append('1').append('U');
+				this.index++;
+				return true;
 			}
 			if(isAOU(next)) {
 				this.buffer.append('G').append('1');
@@ -190,6 +174,29 @@ public class FoneticaPortuguesa implements StringEncoder {
 			return true;
 		}
 		
+		private boolean consonantL(char current) {
+			char next = this.next(); 
+			if( next == 'H' ) {
+				this.buffer.append('L').append('I');
+				this.index++;
+				return true;
+			}
+			if(CONSONANTS_WITHOUT_H.indexOf(next)!=-1 || next == '_') {
+				this.buffer.append('U');
+				return true;
+			}
+			return false;
+		}
+		
+		private boolean consonantN(char current) {
+			if( this.next() == 'H' ) {
+				this.buffer.append('N').append('I');
+				this.index++;
+				return true;
+			}
+			return false;
+		}
+		
 		private boolean consonantP(char current) {
 			char next = this.next();
 			if( next == 'H' ) {
@@ -202,19 +209,22 @@ public class FoneticaPortuguesa implements StringEncoder {
 		
 		private boolean consonantQ(char current) {
 			char next = this.next();
-			if(next == 'U' || next == 'Ü') {
+			if(isU(next)) {
 				char afterNext = this.next(2);
 				if( isEI(afterNext) ) {
-					if( next == 'U' ) {
-						this.buffer.append('K');
-						this.index += 1;
-						return true;
-					}
 					if( next == 'Ü') {
 						this.buffer.append('K').append('U');
 						this.index += 1;
 						return true;
+					} else {
+						this.buffer.append('K');
+						this.index += 1;
+						return true;
 					}
+				} else if( isU(afterNext) ) {
+					this.buffer.append('K').append('U');
+					this.index += 2;
+					return true;
 				} else if( isAOU(afterNext) ) {
 					this.buffer.append('K').append('U');
 					this.index += 1;
@@ -224,22 +234,79 @@ public class FoneticaPortuguesa implements StringEncoder {
 			return false;
 		}
 		
+		private boolean consonantR(char current) {
+			avoidRepeated('R');
+			return false;
+		}
+		
+		private int avoidRepeated(char current) {
+			char next = this.next();
+			int i = 0;
+			while(next==current) {
+				next = this.next(++i+1);
+			}
+			this.index += i;
+			return i;
+		}
+		
 		private boolean consonantS(char current) {
+			if(isVocal(this.prev()) && isVocal(this.next())) {
+				this.buffer.append('Z');
+				return true;
+			}
+			avoidRepeated('S');
 			char next = this.next();
 			if( next == 'H' ) {
 				this.buffer.append('X');
 				this.index++;
 				return true;
 			}
-			if( next == 'S' ) {
-				this.buffer.append('S');
+			return false;
+		}
+		
+		private boolean consonantT(char current) {
+			avoidRepeated('T');
+			return false;
+		}
+		
+		private boolean vocalAnyA(char current) {
+			char next = this.next();
+			if( isU(next) ) {
+				char afterNext = this.next(2);
+				if( isMN(afterNext) ) {
+					this.buffer.append('A').append('N');
+					this.index+=2;
+					return true;
+				}
+			} else if (isMN(next)) {
+				char afterNext = this.next(2);
+				if( STRONG_CONSONANTS.indexOf(afterNext)!=-1 || afterNext == '_' ) {
+					this.buffer.append('A').append('N');
+					this.index++;
+					return true;
+				}
+			} else if( current == 'Ã') {
+				this.buffer.append('A').append('N');
+				if( isO(next) ) {
+					this.index++;
+				} else if( isU(next) && isMN(this.next(2)) ) {
+					this.index+=2;
+				}
+				return true;
+			}
+			return false;
+		}
+		
+		private boolean vocalAnyE(char current) {
+			if( isA(this.next()) ) {
+				this.buffer.append('E').append('I').append('A');
 				this.index++;
 				return true;
 			}
 			return false;
 		}
 		
-		private boolean vocalO(char current) {
+		private boolean vocalAnyO(char current) {
 			char afterNext = this.next(2);
 			if( afterNext == 'S' ) {
 				char next = this.next();
@@ -252,12 +319,24 @@ public class FoneticaPortuguesa implements StringEncoder {
 			return false;
 		}
 		
+		private boolean vocalAnyU(char current) {
+			return false;
+		}
+		
 		private char next() {
 			return this.next(1);
 		}
 		
 		private char next(int salto) {
 			return this.index + salto < this.length ? this.str.charAt(this.index + salto) : '_';
+		}
+		
+		private char prev() {
+			return this.prev(1);
+		}
+		
+		private char prev(int salto) {
+			return this.index - salto >= 0 ? this.str.charAt(this.index - salto) : '_';
 		}
 		
 		private boolean isAOU(char c) {
@@ -268,24 +347,28 @@ public class FoneticaPortuguesa implements StringEncoder {
 			return VOCALS_O.indexOf(c)!=-1;
 		}
 		
+		private boolean isU(char c) {
+			return VOCALS_U.indexOf(c)!=-1;
+		}
+		
 		private boolean isEI(char c) {
 			return VOCALS_EI.indexOf(c)!=-1;
 		}
-	}
-	
-	private String replaceSoundsRegex(String str, Map<String, String[]> sounds) {
-		String replaced = str;
-		for(Entry<String, String[]> e : sounds.entrySet()) {
-			replaced = replaceSoundRegex(replaced, e);
+		
+		private boolean isA(char c) {
+			return VOCALS_A.indexOf(c)!=-1;
 		}
-		return replaced;
-	}
-	
-	private String replaceSoundRegex(String str, Entry<String, String[]> e) {
-		String replaced = str;
-		for(String expression : e.getValue()) {
-			replaced = replaced.replaceAll(expression, e.getKey());
+		
+		private boolean isVocal(char c) {
+			return VOCALS.indexOf(c)!=-1;
 		}
-		return replaced;
+		
+		private boolean isE(char c) {
+			return VOCALS_E.indexOf(c)!=-1;
+		}
+		
+		private boolean isMN(char c) {
+			return CONSONANTS_MN.indexOf(c)!=-1;
+		}
 	}
 }

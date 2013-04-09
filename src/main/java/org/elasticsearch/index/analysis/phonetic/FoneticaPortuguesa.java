@@ -18,10 +18,6 @@
  */
 package org.elasticsearch.index.analysis.phonetic;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 
@@ -150,17 +146,17 @@ public class FoneticaPortuguesa implements StringEncoder {
 			char next = this.next();
 			if( next == 'U' ) {
 				if( isEI(this.next(2)) ) {
-					this.buffer.append('G').append('1');
+					this.buffer.append('G');
 					this.index++;
 					return true;
 				}
 			} else if (next == 'Ü') {
-				this.buffer.append('G').append('1').append('U');
+				this.buffer.append('G').append('U');
 				this.index++;
 				return true;
 			}
 			if(isAOU(next)) {
-				this.buffer.append('G').append('1');
+				this.buffer.append('G');
 				return true;
 			}
 			if(isEI(next)) {

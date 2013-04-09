@@ -133,13 +133,13 @@ public class FoneticaPortuguesaTests {
 	
 	@Test
     public void testGSound() throws EncoderException {
-    	assertEncode("ga", "g1a");
-    	assertEncode("go", "g1o");
-    	assertEncode("gu", "g1u");
-    	assertEncode("gue", "g1e");
-    	assertEncode("gui", "g1i");
-    	assertEncode("güe", "g1ue");
-    	assertEncode("güi", "g1ui");
+    	assertEncode("ga", "ga");
+    	assertEncode("go", "go");
+    	assertEncode("gu", "gu");
+    	assertEncode("gue", "ge");
+    	assertEncode("gui", "gi");
+    	assertEncode("güe", "gue");
+    	assertEncode("güi", "gui");
 	}
 	
 	@Test

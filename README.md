@@ -3,24 +3,13 @@ Phonetic Analysis for Elasticsearch
 
 The Phonetic Analysis plugin integrates phonetic token filter analysis with elasticsearch.
 
-In order to install the plugin, simply run: `bin/plugin -install elasticsearch/elasticsearch-analysis-phonetic/2.1.0`.
+## Version 2.4.0-SNAPSHOT for Elasticsearch: 1.x
 
-* For master elasticsearch versions, look at [master branch](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/master).
-* For 1.4.x elasticsearch versions, look at [es-1.4 branch](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/es-1.4).
-* For 1.3.x elasticsearch versions, look at [es-1.3 branch](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/es-1.3).
-* For 1.2.x elasticsearch versions, look at [es-1.2 branch](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/es-1.2).
-* For 1.1.x elasticsearch versions, look at [es-1.1 branch](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/es-1.1).
-* For 1.0.x elasticsearch versions, look at [es-1.0 branch](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/es-1.0).
-* For 0.90.x elasticsearch versions, look at [es-0.90 branch](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/es-0.90).
+If you are looking for another version documentation, please refer to the 
+[compatibility matrix](http://github.com/elasticsearch/elasticsearch-analysis-phonetic#phonetic-analysis-for-elasticsearch).
 
-|    Phonetic Analysis Plugin   |    elasticsearch    | Release date |
-|-------------------------------|---------------------|:------------:|
-| 2.4.0-SNAPSHOT                | 1.4.0 -> 1.4        |  XXXX-XX-XX  |
 
-Please read documentation relative to the version you are using:
-
-* [2.4.0-SNAPSHOT](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/blob/es-1.4/README.md)
-
+## User guide
 
 A `phonetic` token filter that can be configured with different `encoder` types: 
 `metaphone`, `doublemetaphone`, `soundex`, `refinedsoundex`, 

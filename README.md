@@ -3,7 +3,7 @@ Phonetic Analysis for Elasticsearch
 
 The Phonetic Analysis plugin integrates phonetic token filter analysis with elasticsearch.
 
-## Version 2.4.3-SNAPSHOT for Elasticsearch: 1.4
+## Version 2.4.3 for Elasticsearch: 1.4
 
 If you are looking for another version documentation, please refer to the 
 [compatibility matrix](http://github.com/elasticsearch/elasticsearch-analysis-phonetic#phonetic-analysis-for-elasticsearch).

@@ -9,6 +9,11 @@ In order to install the plugin, simply run:
 bin/plugin install elasticsearch/elasticsearch-analysis-phonetic/2.5.0
 ```
 
+If you want to change the version of the plugin, you have to uninstall it first:
+```sh
+bin/plugin --remove elasticsearch/elasticsearch-analysis-phonetic/2.5.0
+```
+
 
 | elasticsearch |Phonetic Analysis Plugin|   Docs     |  
 |---------------|-----------------------|------------|

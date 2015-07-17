@@ -6,14 +6,14 @@ The Phonetic Analysis plugin integrates phonetic token filter analysis with elas
 In order to install the plugin, simply run: 
 
 ```sh
-bin/plugin install elasticsearch/elasticsearch-analysis-phonetic/2.6.0
+bin/plugin install elasticsearch/elasticsearch-analysis-phonetic/2.7.0
 ```
 
 
 | elasticsearch |Phonetic Analysis Plugin|   Docs     |  
 |---------------|-----------------------|------------|
 | master        |  Build from source    | See below  |
-| es-1.x        |  Build from source    | [2.7.0-SNAPSHOT](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/es-1.x/#version-270-snapshot-for-elasticsearch-1x)  |
+|    es-1.x              |     2.7.0         | [2.7.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.7.0/#version-270-for-elasticsearch-17)                  |
 | es-1.6        |  2.6.0                | [2.6.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.6.0/#version-260-for-elasticsearch-16)  |
 | es-1.5        |  2.5.0                | [2.5.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.5.0/#version-250-for-elasticsearch-15)                  |
 |    es-1.4              |     2.4.3         | [2.4.3](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/v2.4.3/#version-243-for-elasticsearch-14)                  |

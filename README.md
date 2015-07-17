@@ -3,17 +3,17 @@ Phonetic Analysis for Elasticsearch
 
 The Phonetic Analysis plugin integrates phonetic token filter analysis with elasticsearch.
 
-In order to install the plugin, simply run: 
+In order to install the plugin, simply run:
 
 ```sh
 bin/plugin install elasticsearch/elasticsearch-analysis-phonetic/2.7.0
 ```
 
 
-| elasticsearch |Phonetic Analysis Plugin|   Docs     |  
+| elasticsearch |Phonetic Analysis Plugin|   Docs     |
 |---------------|-----------------------|------------|
 | master        |  Build from source    | See below  |
-|    es-1.x              |     2.7.0         | [2.7.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.7.0/#version-270-for-elasticsearch-17)                  |
+|    es-1.7              |     2.7.0         | [2.7.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.7.0/#version-270-for-elasticsearch-17)                  |
 | es-1.6        |  2.6.0                | [2.6.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.6.0/#version-260-for-elasticsearch-16)  |
 | es-1.5        |  2.5.0                | [2.5.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.5.0/#version-250-for-elasticsearch-15)                  |
 |    es-1.4              |     2.4.3         | [2.4.3](https://github.com/elasticsearch/elasticsearch-analysis-phonetic/tree/v2.4.3/#version-243-for-elasticsearch-14)                  |
@@ -35,12 +35,12 @@ plugin --install analysis-phonetic \
 
 ## User guide
 
-A `phonetic` token filter that can be configured with different `encoder` types: 
-`metaphone`, `doublemetaphone`, `soundex`, `refinedsoundex`, 
+A `phonetic` token filter that can be configured with different `encoder` types:
+`metaphone`, `doublemetaphone`, `soundex`, `refinedsoundex`,
 `caverphone1`, `caverphone2`, `cologne`, `nysiis`,
 `koelnerphonetik`, `haasephonetik`, `beidermorse`
 
-The `replace` parameter (defaults to `true`) controls if the token processed 
+The `replace` parameter (defaults to `true`) controls if the token processed
 should be replaced with the encoded one (set it to `true`), or added (set it to `false`).
 
 ```js

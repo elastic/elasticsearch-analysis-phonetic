@@ -1,24 +1,16 @@
-**IMPORTANT**: this project now moved to [elasticsearch repository](https://github.com/elastic/elasticsearch/tree/master/plugins/analysis-phonetic).
+**IMPORTANT: Project MOVED!**
 
-Only important bug fixes will be merged here. If you have a question about the plugin, please use [discuss.elastic.co](https://discuss.elastic.co/c/elasticsearch). If you want to report a bug, please use [elasticsearch repository](https://github.com/elastic/elasticsearch/issues/new).
+From elasticsearch 2.0 you need to look at the following links:
 
----
+* [Source code](https://github.com/elastic/elasticsearch/tree/master/plugins/).
+* [Documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/current/index.html).
+* [Question? Bugs?](https://discuss.elastic.co/c/elasticsearch)
 
-Phonetic Analysis for Elasticsearch
-===================================
-
-The Phonetic Analysis plugin integrates phonetic token filter analysis with elasticsearch.
-
-In order to install the plugin, simply run:
-
-```sh
-bin/plugin install elasticsearch/elasticsearch-analysis-phonetic/2.7.0
-```
+For older versions, look at the following table:
 
 
 | elasticsearch |Phonetic Analysis Plugin|   Docs     |
 |---------------|-----------------------|------------|
-| master        |  Build from source    | See below  |
 |    es-1.7              |     2.7.0         | [2.7.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.7.0/#version-270-for-elasticsearch-17)                  |
 | es-1.6        |  2.6.0                | [2.6.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.6.0/#version-260-for-elasticsearch-16)  |
 | es-1.5        |  2.5.0                | [2.5.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.5.0/#version-250-for-elasticsearch-15)                  |
@@ -31,54 +23,6 @@ bin/plugin install elasticsearch/elasticsearch-analysis-phonetic/2.7.0
 | es-1.0        |  2.0.0                | [2.0.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v2.0.0/#phonetic-analysis-for-elasticsearch)  |
 | es-0.90       |  1.8.0                | [1.8.0](https://github.com/elastic/elasticsearch-analysis-phonetic/tree/v1.8.0/#phonetic-analysis-for-elasticsearch)  |
 
-To build a `SNAPSHOT` version, you need to build it with Maven:
-
-```bash
-mvn clean install
-plugin --install analysis-phonetic \
-       --url file:target/releases/elasticsearch-analysis-phonetic-X.X.X-SNAPSHOT.zip
-```
-
-## User guide
-
-A `phonetic` token filter that can be configured with different `encoder` types:
-`metaphone`, `doublemetaphone`, `soundex`, `refinedsoundex`,
-`caverphone1`, `caverphone2`, `cologne`, `nysiis`,
-`koelnerphonetik`, `haasephonetik`, `beidermorse`
-
-The `replace` parameter (defaults to `true`) controls if the token processed
-should be replaced with the encoded one (set it to `true`), or added (set it to `false`).
-
-```js
-{
-    "index" : {
-        "analysis" : {
-            "analyzer" : {
-                "my_analyzer" : {
-                    "tokenizer" : "standard",
-                    "filter" : ["standard", "lowercase", "my_metaphone"]
-                }
-            },
-            "filter" : {
-                "my_metaphone" : {
-                    "type" : "phonetic",
-                    "encoder" : "metaphone",
-                    "replace" : false
-                }
-            }
-        }
-    }
-}
-```
-
-Note that `beidermorse` does not support `replace` parameter.
-
-
-Questions
----------
-
-If you have questions or comments please use the [mailing list](https://groups.google.com/group/elasticsearch) instead
-of Github Issues tracker.
 
 License
 -------
